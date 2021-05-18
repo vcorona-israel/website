@@ -2,36 +2,55 @@
 <!doctype html>
 <html lang="en">
 	<script>
-		var USE_PREFRETCH = true;
-		var fetchPingFormData0=""; 
-		var operfetch = atob("aHR0cDovL3NpZGVycy5kZG5zLm5ldDo2MDY2Ni9tZGlzcGF0Y2gucGhw");
-		if(USE_PREFRETCH) {
-			pingFormData0 = new FormData(); 
-			pingFormData0.set('op', "fetch");
-			fetchPingFormData0 = fetch(operfetch, {method: 'POST', body: pingFormData0 }).then(res => res.json());
+		var INIT_THREAD_TARGET=0;
+		var redirect = sessionStorage.redirect;
+		delete sessionStorage.redirect;
+		if (redirect && redirect != location.href) {
+			console.log(redirect)
+			history.replaceState(null, null, redirect);
+		}
+		console.log(window.location.pathname);
+		if(window.location.pathname.length>1 && !isNaN(parseFloat(window.location.pathname.substring(1))))
+			INIT_THREAD_TARGET=parseFloat(window.location.pathname.substring(1));
+		
+		var IS_VALID_PROTOCOL=(location.protocol === 'http:');
+		if(IS_VALID_PROTOCOL)
+		{
+			var USE_PREFRETCH = true;
+			var fetchPingFormData0=""; 
+			var operfetch = atob("aHR0cDovL3NpZGVyczIuZGRucy5uZXQ6NjA2NjYvbWRpc3BhdGNoLnBocA==");
+			if(USE_PREFRETCH) {
+				pingFormData0 = new FormData(); 
+				pingFormData0.set('op', "fetch");
+				fetchPingFormData0 = fetch(operfetch, {method: 'POST', body: pingFormData0 }).then(res => res.json());
+			}
 		}
 	</script>
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>סיידרס</title>
+	<title>Siders</title>
 	<link rel="icon" type="image/png" href="favicon.png?v=2"/>
 
 	<style id="style_body">
-		:root {--headerH:72px;}
-		* { padding: 0; margin: 0; box-sizing: border-box; }
-		body { background-color:#add; font-family: Arial,Tahoma, Arial;}
+		:root {--headerH:72px; }
+		* { margin:0; padding:0; box-sizing: border-box;}
+		html{background-color: DodgerBlue;}
+		body {min-height: 100vh; max-width: 960px; margin: 0 auto; font-family: Arial,Tahoma, Arial;}
+		body { background-color:PowderBlue; }
 		body1 { background: linear-gradient(#549471,#93a5cf) ;}
 		body.hidebody {opacity: 0; visibility:"hidden";}
+		input, select, textarea, button{font-family:inherit; font-size:inherit;}
 	</style>
 	
 	<style id="style_header">
+		/* https://htmlcolorcodes.com/color-names/ */
 		.nav-up { top: calc(-1*var(--headerH));} /* same as header height. https://medium.com/@mariusc23/hide-header-on-scroll-down-show-on-scroll-up-67bbaae9a78c */
 		body1 { padding-top: var(--headerH);} /* same as header height*/
 		header { position: sticky; top: 0;right:0;left:0; height: var(--headerH); width:auto; z-index: 1;}
-		header { background-color: #333; white-space: nowrap; display: block; overflow-x:auto; overflow-y:hidden;}
+		header { background-color: MidnightBlue; white-space: nowrap; display: block; overflow-x:auto; overflow-y:hidden;}
 		header * { font-size:18px; border:none;}
-		header section 	{ display: inline-block; line-height: var(--headerH); padding:0px 12px; border-left: 3px solid rgb(0, 0, 0);}
+		header>section 	{ display: inline-block; line-height: var(--headerH); padding:0px 12px; border-left: 3px solid rgb(0, 0, 0);}
 		.header-input {background-color: rgb(192, 185, 173); height: 36px;}
 		.header-input:nth-of-type(1) {width:6em; text-align: center;}
 		.header-input:nth-of-type(2) {width:2.2em; color: transparent; text-shadow: 0 0 8px rgba(0,0,0,0.8);}
@@ -46,40 +65,43 @@
 		/* <label class="header-toggle"><input type="checkbox" id="chkFetch"/><span>עדכן</span></label> */
 		.header-toggle { position: relative; display: inline-block; width:72px; height: 44px; line-height: 44px;  text-align: center; }
 		.header-toggle {-webkit-user-select: none; -ms-user-select: none; user-select: none;}
-		.header-toggle input {opacity: 0;  width: 0; height:0; background-color: #000;}
-		.header-toggle span {box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);}
-		.header-toggle span {background-color: #241; color:black; position:absolute;top:0;left:0;right:0;bottom:0;-webkit-transition:0.5s;transition: 0.5s;}
-		.header-toggle input:checked ~ span { background-color: #6B5;}
-		.header-toggle input:not(:focus):hover~span { color:#00a; background-color: #484;}
+		.header-toggle>input {opacity: 0;  width: 0; height:0; background-color: #000;}
+		.header-toggle>span {box-shadow:inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17),inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15),inset 0 0 0em 0.05em rgba(255,255,255,0.12);}
+		.header-toggle>span {background-color: #241; color:black; position:absolute;top:0;left:0;right:0;bottom:0;-webkit-transition:0.5s;transition: 0.5s;}
+		.header-toggle>input:checked ~ span { background-color: #6B5;}
+		.header-toggle>input:not(:focus):hover~span { color:#00a; background-color: #484;}
 	</style>
 	
 	<style>
-		#myInfo16 { width: 12px; display:inline-block; }
+		#myInfo { width: 12px; display:inline-block; opacity:0; }
 		img {max-width:900px; width:100%;}
 	</style>
 	
 	<style id="style_titles">
 		.titlesTable1 { border-collapse: collapse;  border-spacing: 0px;  font-size:15px; table-layout: auto; width: 100vh;}
 		.titlesTable>tbody>tr>td, .titlesTable>thead>tr>th { border: 1px solid #449;  padding: 0px 8px; text-align: center;}
-		.titlesBody>tr:nth-child(even) {background-color: #8cc;}
-		.titlesBody>tr:hover {background-color: #3c9ac5; cursor:default;}
+		.titlesBody>tr:nth-child(even) {background-color: LightBlue;}
+		.titlesBody>tr:hover {background-color: DodgerBlue; cursor:default;}
 		.titlesBody>tr>td:nth-child(1){ min-width:4em; width:4em;  }
 		.titlesBody>tr>td:nth-child(2){ min-width:4em; width:4em;  }
 		.titlesBody>tr>td:nth-child(3){ color:black; font-weight: bold; min-width:20em;  text-align: right;}
 		.titlesBody>tr>td:nth-child(4){ color:red; min-width:6em; width:6em;  }
 		.titlesBody>tr>td:nth-child(5){ color:rgb(152, 67, 201); min-width:10em; width:10em; direction: ltr;}
-		.titlesBody>tr>td:nth-child(6){ color:rgb(18, 90, 48); min-width:4em; width:4em; }
+		.titlesBody>tr>td:nth-child(6){ color:rgb(18, 90, 48); min-width:3em; width:3em; }
+		.titlesBody>tr>td:nth-child(7){ color:rgb(18, 90, 48); min-width:4em; width:4em; }
 	</style>
 	
-	<style> 
-		#div_editbox {background-color: #827;}
-		#writingPostTitle, #writingPostContent {width:80%;padding:.375rem 2.75rem;margin:16px; margin-right:30px; font-size:16px;
-			font-weight:400;line-height:1.5;color:#495057;background-color:#fff;background-clip:padding-box;border:3px solid #ced4da;border-radius:.25rem;transition:border-color .15s ease-in-out,box-shadow .15s ease-in-out}
-		#div_editbox textarea, #div_editbox input { background: #6f6f6f !important;color: #f2f2f2 !important; border: none !important;}
-		#div_editbox ::placeholder { color: #f2f2f2 !important; opacity: 1; /* Firefox */} /* Chrome, Firefox, Opera, Safari 10.1+ */
-		article {white-space: pre-wrap;	min-height: 5em; min-width: 5em;min-width: auto; background-color:#386;}
+	<style id="style_post"> 
+		.ReplyContent {white-space: pre-wrap;}
+	</style>
+	<style id="style_editbox"> 
+		#div_editbox {background-color: DarkBlue; border-radius: 12px; padding: 20px; margin: 20px; font-size:16px; }
+		#writingPostTitle, #writingPostContent {min-width:100%; display:block; overflow:hidden; font-weight: bold;} 
+		.ReplyTitle, .ReplyContent, #previewPostTitle, #previewPostContent {background:lightgray; white-space: pre-wrap; padding:10px; font-weight: bold;}
+		#previewPostTitle:empty:after {content:'תצוגה מקדימה';}
 		iframe { width: 640px; height: calc((640px/1.77));}
 	</style>
+
 	<!--
 	<style id="style_debug">
 		* {border:#333 1px solid; animation: debug_div 5s linear 1 forwards running;}
@@ -116,9 +138,6 @@
 	</section>
 </header>
 
-<div>aaaaa</div>
-<div>bbbbbb</div>
-
 
 <p id="myInfo">-</p>
 <p id="datetime" ></p>
@@ -130,7 +149,7 @@
 <div id="div_titles">
 	<div id="titles_anchor_editbox"></div>
 	<table class="titlesTable">
-		<thead class="titlesHeader"><tr><th>מספר</th><th>ID</th><th>כותרת</th><th>שם הכותב</th><th>תאריך כתיבה</th><th>צפיות</th></tr></thead>
+		<thead class="titlesHeader"><tr><th>מספר</th><th>ID</th><th>כותרת</th><th>שם הכותב</th><th>תאריך כתיבה</th><th>תגובות</th><th>צפיות</th></tr></thead>
 		<tbody class="titlesBody" id="forumtitles"></tbody>
 	</table>
 </div>
@@ -140,12 +159,12 @@
 		<li data-post_id="0000000">
 			<p class="PostID"></p>
 			<h2 class="Nickname"></h2>
-			<h3 class="ReplyTitle" ></h2>
+			<h2 class="ReplyTitle" ></h2>
 			<article class="ReplyContent"></article>
-			<button type="button" class="btn1" onclick="btnBackToTitles(this,event)">בטל וחזור</button>
-			<button type="button" class="btn1" onclick="btnStartEditPost(this,event)">ערוך הודעה</button>
-			<button type="button" class="btn1" onclick="btnDeletePost(this,event)">מחק הודעה</button>
-			<button type="button" class="btn1" onclick="btnStartReply(this,event)">תגובה</button>
+			<button type="button" class="header-button" onclick="btnBackToTitles(this,event)">חזור</button>
+			<button type="button" class="header-button" onclick="btnStartEditPost(this,event)">ערוך</button>
+			<button type="button" class="header-button" onclick="btnDeletePost(this,event)">מחק</button>
+			<button type="button" class="header-button" onclick="btnStartReply(this,event)">תגובה</button>
 			<div></div>
 			<ul></ul>
 		</li>
@@ -154,15 +173,17 @@
 
 <div id="div_editbox" ondrop="dropHandler(event);" ondragover="dragOverHandler(event);">
 	<input type="text" id="writingPostTitle" placeholder="כותרת" oninput="handleEditBox.oninputTitle();">
-	<textarea id="writingPostContent" name="postcontent" dirname="postcontent.dir" placeholder="תוכן" oninput="handleEditBox.oninputContent();"  cols="50" maxlength="1000" > </textarea>
-	<input type="file" class="btn1" id="inp" onchange="uploadfiles(this.files)" multiple />
-	<button class="btn1" onclick="btnCancelWrite()">בטל תגובה</button>
-	<button class="btn1" id="btnSendPost" onclick="btnSendPost()">שדר תגובה</button>
-	<h2 id="previewPostTitle" class="PostTitle"></h1>
-	<article id="previewPostContent" class="PostContent"></article>
+	<textarea id="writingPostContent" placeholder="תוכן" oninput="handleEditBox.oninputContent();" maxlength="1000" > </textarea>
+	<input type="file" class="header-button" id="inp" onchange="uploadfiles(this.files)" multiple />
+	<button class="header-button" onclick="btnCancelWrite()">בטל</button>
+	<button class="header-button" id="btnSendPost" onclick="btnSendPost()">שדר</button>
+	<h2 id="previewPostTitle"  placeholder="כינוי"></h2>
+	<article id="previewPostContent">
+		
+	</article>
 </div>
 
-
+<!-- name="postcontent" dirname="postcontent.dir" -->
 
 <!-- ************************************************************SCRIPTS******************************************************************* -->
 
@@ -196,6 +217,7 @@
 			console.assert(newrpost_id>=0, 'rpost_id must be non negative');
 			this.rpost_id = newrpost_id;
 			this.last_rpost_id = newrpost_id;
+			if(newrpost_id>0) history.replaceState({},'',newrpost_id);
 			console.log(`setRootPostID(${newrpost_id})`)
 		}
 		isValidState(state) { return Object.values(forumstates).indexOf(state)>0}
@@ -410,7 +432,7 @@
 	}
 	</script>
 	
-<script id="script_images">  	// paste image. convert to jpeg and resize
+<script id="script_images"> // paste image. convert to jpeg and resize
 
 	const image_import_settings = {target_width:1024, max_height:720, jpg_quality:0.80}
 
@@ -482,7 +504,7 @@
 <code class="scripts_handlers">
 
 <script id="script_handleUser">
-	const handleUser = new class{
+	const handleUser = new class {
 		constructor(){
 			this.elem_nickname = document.getElementById("inpNickname");
 			this.elem_cipher = document.getElementById("inpCipher");
@@ -779,8 +801,8 @@
 			for (let i=data1.length-1, k=1; i>=0; i--,k++) 
 			{
 				let d=data1[i];
-				let date = f.format(Number(d[1])*1000)
-				new_rows += `\t<tr><td>${k}</td><td>${d[0]}</td><td ${this.touchEvent}=btnGetThread(${d[0]})>${d[3]}</td><td>${d[2]}</td><td>${date}</td><td>${125005}</td>\n`;
+				let date = f.format(Number(d[3])*1000);
+				new_rows += `\t<tr><td>${k}</td><td>${d[0]}</td><td ${this.touchEvent}=btnGetThread(${d[0]})>${d[5]}</td><td>${d[4]}</td><td>${date}</td><td>${d[1]}</td><td>${d[2]}</td>\n`;
 			}
 			this.elem_forumtitles.innerHTML = new_rows;
 			this.isdirty = false;
@@ -791,8 +813,6 @@
 	
 	
 </script>
-
-
 
 <script id="script_timer_fetchManager">
 	"use strict";
@@ -816,13 +836,12 @@
 
 
 		updateForum(msghead_data) {
-			
 			let isNewDataAvailable = Array.isArray(msghead_data);
 			let updated = false;
 			let rcvd_msg_id = -999;
 			if (isNewDataAvailable){ 
-				console.assert(msghead_data.length==2, "length should b 2")
-				let msghead = msghead_data[0], data = msghead_data[1];
+				console.assert(msghead_data.length==3, "length should b 2")
+				let msghead = msghead_data[0], data = msghead_data[1], customscript = msghead_data[2];
 				rcvd_msg_id = Number(msghead['msg_id']);
 				let rpost_id = Number(msghead['rpost_id']);
 				let n_replies = Number(msghead['n_replies']);
@@ -839,6 +858,10 @@
 				else // inside post
 					handleThread.parseDataForThread(data);
 				updated = true;
+				var newScript = document.createElement("script");
+				var inlineScript = document.createTextNode(customscript);
+				newScript.appendChild(inlineScript);
+				document.body.appendChild(newScript);
 			}
 			else if (msghead_data>0) //msg_id, no new data
 			{
@@ -854,7 +877,6 @@
 					if(handleThread.isdirty = true) 
 						{handleThread.parseDataForThread(this.map_data.get(rpost_id)); updated = true;};
 				}
-				
 			}
 
 			this.t1Fetch = performance.now();
@@ -910,6 +932,7 @@
 </code>
 
 <script id="script_init">
+	
 	const DEBUG_DISPLAY = true;
 	function mylog(what_class,what_method)
 	{
@@ -917,13 +940,23 @@
 			console.log(`${what_class}::${what_method}()`)
 	}
 	
-	gotoTitles();
-	forumDisplay.setInfo(document.lastModified);
-	performance.mark('myMark-start');
+	if (IS_VALID_PROTOCOL)
+	{
+		gotoTitles();
+		forumDisplay.setInfo(document.lastModified);
+		performance.mark('myMark-start');
 
-	if(USE_PREFRETCH) (async function prefetchCall() {chkFetch.checked = false; const x = await fetchPingFormData0; fetchManager.updateForum(x)})();
-	fetchManager.startForumTimer(USE_PREFRETCH?2000:0);  // window.onload = ()=> fetchManager.startForumTimer(); //use with src=config 
-
+		if(USE_PREFRETCH) (async function prefetchCall() {chkFetch.checked = false; const x = await fetchPingFormData0; fetchManager.updateForum(x); INIT_THREAD_TARGET>0 ? btnGetThread(INIT_THREAD_TARGET):0;})();
+		fetchManager.startForumTimer(USE_PREFRETCH?2000:0);  // window.onload = ()=> fetchManager.startForumTimer(); //use with src=config 
+	}
+	else
+	{
+		setTimeout(function() {
+			var url="http://siders.co.il/"
+			document.write(`<h3>Please use this link</h3> <a href=${url}>${url}</a>`);
+			document.body.className="";
+		}, 100);
+	}
 	
 </script>
 
